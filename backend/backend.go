@@ -168,7 +168,8 @@ func (b *Backend) enqueueForReceive(recvType string, msg *pb.Msg, src uint64) {
 }
 
 func (b *Backend) connectWorker(peer *PeerInfo, conn *connection.Manager) {
-	timeout := 1 * time.Second
+	// WG: increased timeout to stop the loop from calling wg.Done multiple times and crashing the server
+	timeout := 10 * time.Second
 	log.Info(peer.id)
 	delay := time.After(1 * timeout)
 	for {
