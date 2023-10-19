@@ -171,13 +171,13 @@ func (b *Backend) connectWorker(peer *PeerInfo, conn *connection.Manager) {
 	// WG: increased timeout to stop the loop from calling wg.Done multiple times and crashing the server
 	timeout := 10 * time.Second
 	log.Info(peer.id)
-	delay := time.After(1 * timeout)
+	delay := time.After(0 * time.Second)
 	for {
 		// pace reconnect attempts
 		<-delay
 
 		// set up for next
-		delay = time.After(timeout)
+		delay = time.After(1 * time.Second)
 
 		log.Infof("connecting to replica %d (%s)", peer.id, peer.info)
 		conn, err := conn.DialPeer(peer.info, grpc.WithBlock(), grpc.WithTimeout(timeout))
