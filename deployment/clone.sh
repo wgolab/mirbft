@@ -21,3 +21,5 @@ cd /opt/gopath/src/github.com/IBM/mirbft/server
 go build
 cd /opt/gopath/src/github.com/IBM/mirbft/client
 go build
+go version
+echo "Done clone.sh"
