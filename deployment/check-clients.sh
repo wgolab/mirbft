@@ -11,6 +11,6 @@ clients=$(grep client cloud-instance.info | awk '{ print $1}')
 
 for p in $clients; do
     pub=$(getIP $p)
-    ssh $ssh_options $ssh_user@$pub "cat /opt/gopath/src/github.com/IBM/mirbft/client/client.out" &
+    ssh $ssh_options $ssh_user@$pub "hostname; tail /opt/gopath/src/github.com/IBM/mirbft/client/client.out" &
 done
 wait
