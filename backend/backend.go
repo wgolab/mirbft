@@ -172,12 +172,13 @@ func (b *Backend) connectWorker(peer *PeerInfo, conn *connection.Manager) {
 	timeout := 10 * time.Second
 	log.Info(peer.id)
 	delay := time.After(0 * time.Second)
+	calledDone := false
 	for {
 		// pace reconnect attempts
 		<-delay
 
 		// set up for next
-		delay = time.After(1 * time.Second)
+		delay = time.After(timeout)
 
 		log.Infof("connecting to replica %d (%s)", peer.id, peer.info)
 		conn, err := conn.DialPeer(peer.info, grpc.WithBlock(), grpc.WithTimeout(timeout))
@@ -196,7 +197,11 @@ func (b *Backend) connectWorker(peer *PeerInfo, conn *connection.Manager) {
 			continue
 		}
 		log.Noticef("connection to replica %d (%s) established", peer.id, peer.info)
-		b.wg.Done()
+
+		if !calledDone {
+		   b.wg.Done()
+		   calledDone = true
+		}
 
 		for {
 			msg, err := consensus.Recv()
