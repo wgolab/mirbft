@@ -2,11 +2,11 @@
 # SPECIFY BELOW
 
 # SSH user for access to remote machines, no need to specify for the local deployment.
-ssh_user="user"
+ssh_user="ec2-user"
 
 # Key for SSH access to remote machines, no need to specify it for a local deployment
 # All machines must be accessible with the same SSH key
-private_key_file="/path/to/ssh-key"
+private_key_file="/home/wgolab/.ssh/AWS-key"
 
 #=======================================================================================================================
 
