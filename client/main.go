@@ -239,7 +239,7 @@ func main() {
 }
 
 
-func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clients, parallelism int, stop chan bool) {
+func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clients, parallelism int, stopchan chan bool) {
 
 	for i := 0; i < numRequests/parallelism; i++ {
 		for j:=0; j< parallelism; j++ {
@@ -258,7 +258,7 @@ func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clie
 				c.rotateBuckets()
 			}
 		}
-		if len(stop) > 0 {
+		if len(stopchan) > 0 {
 		   return
 		}
 		if timeout > 0 {
