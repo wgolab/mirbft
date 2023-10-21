@@ -223,7 +223,7 @@ func main() {
 	//}
 	//wg.Wait()
 
-	c.submitRequests(timeout, broadcast, total, clients, sendParallelism)
+	c.submitRequests(timeout, broadcast, total, clients, sendParallelism, stop)
 
 	log.Infof("STOPPED SENDING")
 
@@ -239,7 +239,7 @@ func main() {
 }
 
 
-func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clients, parallelism int) {
+func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clients, parallelism int, stop <-chan bool) {
 
 	for i := 0; i < numRequests/parallelism; i++ {
 		for j:=0; j< parallelism; j++ {
@@ -257,6 +257,9 @@ func (c *Client) submitRequests(timeout int64, broadcast bool, numRequests, clie
 				log.Infof("Rotating buckets")
 				c.rotateBuckets()
 			}
+		}
+		if len(stop) > 0 {
+		   return
 		}
 		if timeout > 0 {
 			time.Sleep(time.Duration(timeout) * time.Nanosecond)
