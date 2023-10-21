@@ -129,7 +129,7 @@ func main() {
 	}
 
 	waitc := make([]chan struct{}, c.n)
-	stop := make(chan bool)
+	stop := make(chan bool, 1)
 
 
 	for inc := c.dst; inc < c.n+dst; inc++ {
