@@ -13,6 +13,6 @@ for p in $servers; do
     pub=$(getIP $p)
     echo $p
     echo $pub
-    ssh $ssh_options $ssh_user@$pub "cat /opt/gopath/src/github.com/IBM/mirbft/server/server.out" &
+    ssh $ssh_options $ssh_user@$pub "tail /opt/gopath/src/github.com/IBM/mirbft/server/server.out" &
 done
 wait
