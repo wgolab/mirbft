@@ -119,6 +119,8 @@ def main(argv):
                         tx = Transaction()
                         tx.id = txId
                         transactions[txId] = tx
+                    else:
+                        tx = transactions[txId]
                     tx.delivered = delivered
             duration = (end-start).total_seconds()
             reqs = reqs * sampleValue
@@ -136,16 +138,26 @@ def main(argv):
     for tx in transactions.values():
         if tx.sent is not None and tx.delivered is not None:
             tx.latency = (tx.delivered - tx.sent).total_seconds()*1000
-            latency.append(tx.latency)
+            if tx.latency > 0:
+                latency.append(tx.latency)
     latency.sort()
     f = open("latency.out", "w")
     for i in range(len(latency)):
         f.write(str(latency[i])+" "+str(float(i)/(len(latency)))+"\n")
     if len(latency)>0:
-        latency_avg = np.mean(latency)
+        latency_avg = int(np.mean(latency))
         print "Average end to end latency: " + str(latency_avg) + " ms"
+        latency_med = int(np.median(latency))
+        print "Median  end to end latency: " + str(latency_med) + " ms"
+        latency_nf = int(np.percentile(latency, 95))
+        print "95%     end to end latency: " + str(latency_nf) + " ms"
+        latency_nn = int(np.percentile(latency, 99))
+        print "99%     end to end latency: " + str(latency_nn) + " ms"
+        latency_max = int(np.max(latency))
+        print "Maximum end to end latency: " + str(latency_max) + " ms"
+
     if len(rate)>0:
-        rate_avg = np.mean(rate)
+        rate_avg = int(np.mean(rate))
         print "Average request rate per client: " + str(rate_avg) + " r/s"
 
 
@@ -162,7 +174,7 @@ def main(argv):
         if duration <= 0 :
             print "Too many requests removed"
         else:
-            thr = float(len(delivery))/duration
+            thr = int(float(len(delivery))/duration)
             print "Throughput: " + str(thr)  + " r/s"
         print "Requests: " + str(len(delivery))
 
