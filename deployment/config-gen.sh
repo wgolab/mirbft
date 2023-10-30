@@ -79,15 +79,13 @@ else
   for p in $servers $clients; do
       pub=$(getIP $p)
       if [ "$config_only" = "false" ]; then
-        ssh $ssh_user@$pub $ssh_options "rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/*"
+          ssh $ssh_user@$pub $ssh_options "rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/*; rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/*; rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/*; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/" &
+      else
+	  ssh $ssh_user@$pub $ssh_options "rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/*; rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/*; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/; mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/" &
       fi
-      ssh $ssh_user@$pub $ssh_options "rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/*"
-      ssh $ssh_user@$pub $ssh_options "rm -rf /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/*"
-      ssh $ssh_user@$pub $ssh_options "mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/"
-      ssh $ssh_user@$pub $ssh_options "mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/"
-      ssh $ssh_user@$pub $ssh_options "mkdir -p /opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/"
   done
 fi
+wait
 
 if [ "$config_only" = "false" ]; then
     cd temp
@@ -110,14 +108,15 @@ if [ "$config_only" = "false" ]; then
     else
         for p in $servers $clients; do
             pub=$(getIP $p)
-            scp $ssh_options temp/*.pem $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/
+            scp $ssh_options temp/*.pem $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/ &
         done
         for p in $servers; do
             pub=$(getIP $p)
-            scp $ssh_options temp/$p.key $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/
+            scp $ssh_options temp/$p.key $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/ &
         done
     fi
 fi
+wait
 
 echo "Generating configuration files"
 port=8001
@@ -126,7 +125,8 @@ thres=16
 if [ $N -ge $thres ]; then
     watermark=$(( N*2 ))
     epoch=$(( N*16 ))
-    timeout=$(( N*32*1000000 ))
+    #timeout=$(( N*32*1000000 ))
+    timeout=200000000
 else
     watermark=32
     epoch=256
@@ -194,12 +194,13 @@ if [ "$local" = "true" ]; then
 else
     for p in $servers; do
        pub=$(getIP $p)
-       scp $ssh_options temp/config_$p.yml $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/config.yml
+       scp $ssh_options temp/config_$p.yml $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/serverconfig/config.yml &
     done
     for p in $clients; do
        pub=$(getIP $p)
-       scp $ssh_options temp/config_$p.yml $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/config.yml
+       scp $ssh_options temp/config_$p.yml $ssh_user@$pub:/opt/gopath/src/github.com/IBM/mirbft/deployment/config/clientconfig/config.yml &
     done
 fi
+wait
 
-rm -rf temp
+#rm -rf temp

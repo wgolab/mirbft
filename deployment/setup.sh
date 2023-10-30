@@ -3,18 +3,18 @@
 export user=$(id -un)
 export group=$(id -gn)
 
-sudo apt-get update
-sudo apt-get install -y curl git
-sudo apt-get install -y python2
-sudo apt-get install -y python-numpy
-sudo apt-get install -y build-essential
-sudo apt-get install -y protobuf-compiler
-sudo apt-get install -y	protobuf-compiler-grpc
+sudo yum update
+sudo yum install -y git
+sudo yum install -y python
+sudo yum install -y python-numpy
+#sudo yum install -y build-essential
+sudo yum install -y protobuf-compiler
+#sudo yum install -y	protobuf-compiler-grpc
 
 cd ~
 
-wget https://storage.googleapis.com/golang/go1.17.2.linux-amd64.tar.gz
-tar xpzf go1.17.2.linux-amd64.tar.gz
+wget https://storage.googleapis.com/golang/go1.18.10.linux-amd64.tar.gz
+tar xpzf go1.18.10.linux-amd64.tar.gz
 
 sudo mkdir -p /opt/gopath
 sudo chown -R  $user:$group /opt/gopath
@@ -43,7 +43,7 @@ go get -u github.com/rs/zerolog/log
 mkdir -p /opt/gopath/src/github.com/IBM/
 cd /opt/gopath/src/github.com/IBM/
 if [ ! -d "/opt/gopath/src/github.com/IBM/mirbft" ]; then
-  git clone https://github.com/hyperledger-labs/mirbft.git
+  git clone https://github.com/wgolab/mirbft.git
 fi
 cd /opt/gopath/src/github.com/IBM/mirbft
 git checkout research

@@ -6,19 +6,30 @@ d : 3                                 # number of dispatchers per node
 
 logging: "critical"
 chainId : "chain"
-ledger: ""                            # persistent storage path
+ledger: "/tmp/"                       # persistent storage path
 
+# WG
 maxLeaders: NUM_NODES                 # max leaderset size, set to 1 to emulate PBFT
+#maxLeaders: 1			      # max leaderset size, set to 1 to emulate PBFT
+
 batchDurationNsec: BATCHTIMEOUT       # timeout to cut a batch in nanoseconds
 batchSizeBytes: 2000000               # batch size in bytes
 epochTimeoutNsec: 20000000000         # epoch change time out in nanoseconds
 signatureVerification: true           # request signature verification
 batchSignature: false                 # batch signatures on commit messages
 payloadSharding: false                # light total order broadcast
+
+# WG
 sigSharding: true                     # request signature verification sharding
+#sigSharding: false                     # request signature verification sharding
+
 watermarkDist: WATERMARK              # low to high watermaks distance in number of batches
 checkpointDist: 16                    # checkpoint distance in number of batches
+
+# WG
 bucketRotationPeriod: EPOCH           # max epoch size in recovery & bucket rotation period in stable mode
+#bucketRotationPeriod: 9999999          # max epoch size in recovery & bucket rotation period in stable mode
+
 clientWatermarkDist: 10000000         # number of parallel requests per client
 buckets: 2                            # buckets per leader
 
@@ -34,7 +45,7 @@ requestSize: 500
 requestsPerClientCore: 0
 
 useTLS: true                          # Use TLS for both peer-to-peer and client-to-peer communication
-serverConnectionBuffer: 2             # Number of seconds the servers need to wait for each-other to establish all connections
+serverConnectionBuffer: 20            # Number of seconds the servers need to wait for each-other to establish all connections
 self:
   listen: "LISTEN_ENDPOINT"
   caCertFile: "/opt/gopath/src/github.com/IBM/mirbft/deployment/config/certs/ecdsa/ca.pem"

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 getIP() {
 	grep -w $1 cloud-instance.info | awk '{ print $2}'
